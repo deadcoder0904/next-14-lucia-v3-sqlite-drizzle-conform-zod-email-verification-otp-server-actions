@@ -1,4 +1,4 @@
-# # next-14-lucia-v3-sqlite-drizzle-conform-zod-email-verification-otp-server-actions
+# next-14-lucia-v3-sqlite-drizzle-conform-zod-email-verification-otp-server-actions
 
 # Store Environment Variables
 
