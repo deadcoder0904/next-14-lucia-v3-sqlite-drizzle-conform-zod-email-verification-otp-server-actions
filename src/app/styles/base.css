@@ -1,0 +1,24 @@
+html {
+  scroll-behavior: smooth;
+}
+
+form {
+  @apply mt-2;
+}
+
+input[type='email'] {
+  @apply text-black px-2 w-64;
+}
+
+.anchor,
+button[type='submit'] {
+  @apply text-sky-300 underline;
+}
+
+.resend-otp {
+  @apply text-red-400 underline;
+}
+
+.anchor-dark {
+  @apply text-gray-300 underline;
+}

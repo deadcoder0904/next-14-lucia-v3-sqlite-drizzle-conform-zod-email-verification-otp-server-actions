@@ -1,0 +1,52 @@
+{
+  "name": "next-13-lucia-auth-drizzle-turso-sqlite-magic-link",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "turbo": "next dev --turbo",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:push": "drizzle-kit push:sqlite --config drizzle.config.ts",
+    "db:generate": "drizzle-kit generate:sqlite --config drizzle.config.ts",
+    "db:studio": "drizzle-kit studio --host localhost --port 3002 --verbose --config drizzle.config.ts",
+    "db:seed": "node --import tsx --env-file .env ./seed/insert.ts",
+    "db:delete": "node --import tsx --env-file .env ./seed/delete.ts",
+    "clean": "rimraf .next",
+    "knip": "knip"
+  },
+  "dependencies": {
+    "@conform-to/react": "1.0.0-rc.0",
+    "@conform-to/zod": "1.0.0-rc.0",
+    "@lucia-auth/adapter-drizzle": "1.0.0",
+    "@types/node": "20.11.13",
+    "@types/react": "18.2.48",
+    "@types/react-dom": "18.2.18",
+    "autoprefixer": "10.4.17",
+    "better-sqlite3": "^9.3.0",
+    "clsx": "^2.1.0",
+    "dotenv": "^16.4.1",
+    "drizzle-orm": "^0.29.3",
+    "eslint": "8.56.0",
+    "eslint-config-next": "14.1.0",
+    "lucia": "3.0.1",
+    "next": "14.1.0",
+    "next-client-cookies": "^1.1.0",
+    "oslo": "^1.0.3",
+    "postcss": "8.4.33",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "tailwindcss": "3.4.1",
+    "typescript": "5.3.3",
+    "ulidx": "^2.2.1",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.9",
+    "drizzle-kit": "^0.20.13",
+    "knip": "^4.2.3",
+    "rimraf": "^5.0.5",
+    "tsx": "^4.7.0"
+  }
+}

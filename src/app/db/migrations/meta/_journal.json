@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1706449547422,
+      "tag": "0000_blushing_alex_wilder",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1706518448804,
+      "tag": "0001_bitter_pandemic",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1706531812894,
+      "tag": "0002_talented_rumiko_fujikawa",
+      "breakpoints": true
+    }
+  ]
+}
