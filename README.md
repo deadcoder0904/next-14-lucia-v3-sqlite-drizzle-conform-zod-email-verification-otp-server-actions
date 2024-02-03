@@ -81,3 +81,190 @@ Most of the issues are with Next.js 14 Server Actions that I stumbled upon only 
 I don't think its ready for prime time yet so I'm gonna use API routes on my main project.
 
 If you want to use this repo, check out 2 commits behind this as that works without any errors.
+
+### Basic Rate Limit Example that works
+
+#### src/middleware.ts
+
+```ts
+import { NextRequest, NextResponse } from 'next/server'
+import { RateLimiterMemory } from 'rate-limiter-flexible'
+
+const opts = {
+	points: 10,
+	duration: 5, // Per second
+}
+
+const rateLimiter = new RateLimiterMemory(opts)
+
+export default async function middleware(request: NextRequest) {
+	if (request.method === 'POST') {
+		let res: any
+		try {
+			res = await rateLimiter.consume(2)
+			console.log({ res })
+		} catch (error) {
+			res = error
+		}
+
+		if (res._remainingPoints > 0) {
+			return NextResponse.next()
+		} else {
+			return NextResponse.json(
+				{
+					error: 'Rate limit exceeded. Please try again later.',
+				},
+				{
+					status: 429,
+				},
+			)
+		}
+	}
+}
+
+export const config = {
+	matcher: ['/api/login'],
+}
+```
+
+#### rate-limit/login.ts
+
+```ts
+const LOCALHOST_URL = 'http://localhost:3000'
+
+async function main() {
+	for (let i = 0; i < 20; i++) {
+		const url = `${LOCALHOST_URL}/api/login`
+		const email = `test${i}@example.com`
+		const body = JSON.stringify({ email })
+
+		const response = await fetch(url, { method: 'POST', body })
+		const data = await response.json()
+
+		console.log({ data })
+	}
+}
+
+main()
+```
+
+Run Next.js dev server using `pnpm dev` in one terminal & brute-force the login api in another using `pnpm ratelimit:login` & it'll show this output in ratelimit terminal:
+
+```json
+{ data: { success: false } }
+{ data: { success: false } }
+{ data: { success: false } }
+{ data: { success: false } }
+{ data: { success: false } }
+{ data: { success: false } }
+{ data: { success: false } }
+{ data: { success: false } }
+{ data: { success: false } }
+{ data: { error: 'Rate limit exceeded. Please try again later.' } }
+{ data: { error: 'Rate limit exceeded. Please try again later.' } }
+{ data: { error: 'Rate limit exceeded. Please try again later.' } }
+{ data: { error: 'Rate limit exceeded. Please try again later.' } }
+{ data: { error: 'Rate limit exceeded. Please try again later.' } }
+{ data: { error: 'Rate limit exceeded. Please try again later.' } }
+{ data: { error: 'Rate limit exceeded. Please try again later.' } }
+{ data: { error: 'Rate limit exceeded. Please try again later.' } }
+{ data: { error: 'Rate limit exceeded. Please try again later.' } }
+{ data: { error: 'Rate limit exceeded. Please try again later.' } }
+{ data: { error: 'Rate limit exceeded. Please try again later.' } }
+```
+
+And this output in dev server terminal:
+
+```json
+{
+  res: RateLimiterRes {
+  _remainingPoints: 9,
+  _msBeforeNext: 5000,
+  _consumedPoints: 1,
+  _isFirstInDuration: true
+}
+}
+[19:49:26.652] INFO (9732): ≡ƒÅü POST /api/login/route
+{
+  res: RateLimiterRes {
+  _remainingPoints: 8,
+  _msBeforeNext: 4940,
+  _consumedPoints: 2,
+  _isFirstInDuration: false
+}
+}
+[19:49:26.706] INFO (9732): ≡ƒÅü POST /api/login/route
+{
+  res: RateLimiterRes {
+  _remainingPoints: 7,
+  _msBeforeNext: 4898,
+  _consumedPoints: 3,
+  _isFirstInDuration: false
+}
+}
+[19:49:26.750] INFO (9732): ≡ƒÅü POST /api/login/route
+{
+  res: RateLimiterRes {
+  _remainingPoints: 6,
+  _msBeforeNext: 4855,
+  _consumedPoints: 4,
+  _isFirstInDuration: false
+}
+}
+[19:49:26.793] INFO (9732): ≡ƒÅü POST /api/login/route
+{
+  res: RateLimiterRes {
+  _remainingPoints: 5,
+  _msBeforeNext: 4810,
+  _consumedPoints: 5,
+  _isFirstInDuration: false
+}
+}
+[19:49:26.839] INFO (9732): ≡ƒÅü POST /api/login/route
+{
+  res: RateLimiterRes {
+  _remainingPoints: 4,
+  _msBeforeNext: 4765,
+  _consumedPoints: 6,
+  _isFirstInDuration: false
+}
+}
+[19:49:26.882] INFO (9732): ≡ƒÅü POST /api/login/route
+{
+  res: RateLimiterRes {
+  _remainingPoints: 3,
+  _msBeforeNext: 4721,
+  _consumedPoints: 7,
+  _isFirstInDuration: false
+}
+}
+[19:49:26.931] INFO (9732): ≡ƒÅü POST /api/login/route
+{
+  res: RateLimiterRes {
+  _remainingPoints: 2,
+  _msBeforeNext: 4672,
+  _consumedPoints: 8,
+  _isFirstInDuration: false
+}
+}
+[19:49:26.977] INFO (9732): ≡ƒÅü POST /api/login/route
+{
+  res: RateLimiterRes {
+  _remainingPoints: 1,
+  _msBeforeNext: 4625,
+  _consumedPoints: 9,
+  _isFirstInDuration: false
+}
+}
+[19:49:27.022] INFO (9732): ≡ƒÅü POST /api/login/route
+{
+  res: RateLimiterRes {
+  _remainingPoints: 0,
+  _msBeforeNext: 4583,
+  _consumedPoints: 10,
+  _isFirstInDuration: false
+}
+}
+```
+
+It only works with API routes. Idk how to make it work for Server Actions. I tried Puppeteer/Playwright but for some reason, it calls login api twice & halts the process because of not unique email.
