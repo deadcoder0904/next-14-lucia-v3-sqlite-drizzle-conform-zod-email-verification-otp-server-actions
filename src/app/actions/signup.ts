@@ -11,8 +11,9 @@ import { lucia } from '@/app/auth/lucia'
 import { db } from '@/app/db/index'
 import { userTable } from '@/app/db/drizzle.schema'
 import { createSignupSchema } from '@/app/lib/zod.schema'
-import { generateEmailVerificationCode } from '@/app/lib/emailVerificationCode'
+import { generateEmailVerificationCode } from '@/app/lib/email-verification-code'
 import { VERIFIED_EMAIL_ALERT } from '@/app/lib/constants'
+import { signupLimiter } from '@/app/lib/rate-limit'
 
 export async function sendEmailVerificationCode(userId: string, email: string) {
   const code = await generateEmailVerificationCode(userId)
@@ -20,6 +21,8 @@ export async function sendEmailVerificationCode(userId: string, email: string) {
 }
 
 export async function signup(prevState: unknown, formData: FormData) {
+  // const {} = await signupLimiter.consume()
+
   const userId = ulid()
   const submission = await parseWithZod(formData, {
     schema: (control) =>

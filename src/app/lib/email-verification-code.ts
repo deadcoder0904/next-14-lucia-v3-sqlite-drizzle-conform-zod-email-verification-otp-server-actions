@@ -1,4 +1,3 @@
-import { generateId } from 'lucia'
 import { eq } from 'drizzle-orm'
 import { TimeSpan, createDate } from 'oslo'
 import { generateRandomString, alphabet } from 'oslo/crypto'
