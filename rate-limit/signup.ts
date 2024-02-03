@@ -3,6 +3,7 @@ import puppeteer from 'puppeteer'
 async function main() {
   const browser = await puppeteer.launch({
     headless: false,
+    devtools: true,
   })
   const page = await browser.newPage()
 
@@ -12,9 +13,10 @@ async function main() {
     })
 
     await page.type('input[name="email"]', `test${i}@example.com`)
-    await page.click('button[type="submit"]')
+    await page.waitForSelector('button[type=submit]')
 
-    await page.waitForNavigation({ waitUntil: 'networkidle0' })
+    await page.click('button[type="submit"]') // Clicking the link will indirectly cause a navigation
+    // await page.waitForNavigation({ waitUntil: 'networkidle0' })
     await page.waitForSelector('#verify-email-form', {
       visible: true,
       timeout: 0,

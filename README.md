@@ -57,3 +57,27 @@ https://redis.io/docs/install/install-redis/
 3. OTP - What if someone tries to gain access by trying various different OTP combinations to find the best one?
 
 Since it is a simple example, I will go with IP-based blocking for 1 day using browser finderprinting library.
+
+## How to test rate-limit API using Postman/Hoppscotch?
+
+Go to https://hoppscotch.io/ (or https://www.postman.com/)
+
+Select `POST` & enter `http://localhost:3000/signup` in URL.
+
+Go to `Headers` & add `Next-Action` to `948fdf27b221db98253b47aa8f8d1c589c93e063` as well as `Origin` to `localhost:3000` & click on `Send` 10 times to see the error.
+
+## Tried Rate Limits on Next.js 14 Server Actions using 2 methods:
+
+1. Puppeteer/Playwright
+
+The scripts are in `rate-limit` folder. Both for some reason send 2 requests & it always gives `Email is not unique` error since 1st request adds it to the database. Its a nasty bug in either Puppeteer/Playwright or my scripts. But definitely not in my email signup process. It works well manually.
+
+2. Fetch request using Web API
+
+Tried it with `Next-Action` as a header but that doesn't work either.
+
+Most of the issues are with Next.js 14 Server Actions that I stumbled upon only while automating rate limits.
+
+I don't think its ready for prime time yet so I'm gonna use API routes on my main project.
+
+If you want to use this repo, check out 2 commits behind this as that works without any errors.
