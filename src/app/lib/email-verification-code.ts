@@ -16,7 +16,7 @@ export async function generateEmailVerificationCode(
 
   await db.insert(emailVerificationCodeTable).values({
     code,
-    expiresAt: createDate(new TimeSpan(1, 'm')).getTime(), // 5 minutes
+    expiresAt: createDate(new TimeSpan(5, 'm')).getTime(), // 5 minutes
     userId,
   })
 
